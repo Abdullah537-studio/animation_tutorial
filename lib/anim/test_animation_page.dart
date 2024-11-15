@@ -1,52 +1,52 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
-class TestAnimationPage extends StatefulWidget {
-  const TestAnimationPage({super.key});
+class AnimatedBuilderExample extends StatefulWidget {
+  const AnimatedBuilderExample({super.key});
 
   @override
-  State<TestAnimationPage> createState() => _TestAnimationPageState();
+  _AnimatedBuilderExampleState createState() => _AnimatedBuilderExampleState();
 }
 
-class _TestAnimationPageState extends State<TestAnimationPage> {
-  BoxShape shape = BoxShape.circle;
-  double elev = 0.0;
-  Color shadowColor = Colors.grey;
-  Color color = Colors.green;
+class _AnimatedBuilderExampleState extends State<AnimatedBuilderExample>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("start animation"),
-      ),
-      body: Container(
-        child: ListView(
-          children: [
-            InkWell(
-              onTap: () {
-                setState(() {
-                  shape = BoxShape.rectangle;
-                  elev = 20;
-                  shadowColor = Colors.black;
-                  color = Colors.blue;
-                });
-              },
-              child: AnimatedPhysicalModel(
-                shape: shape,
-                animateColor: true,
-                elevation: elev,
-                color: color,
-                shadowColor: shadowColor,
-                duration: const Duration(seconds: 2),
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  color: Colors.red,
-                  alignment: Alignment.center,
-                ),
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (BuildContext context, Widget? child) {
+          return Container(
+            color: Colors.white,
+            height: 100,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: const [Colors.purple, Colors.pink, Colors.yellow],
+                stops: [0, _controller.value, 1],
               ),
-            )
-          ],
-        ),
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.white),
+            ),
+          );
+        },
       ),
     );
   }

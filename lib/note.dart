@@ -5,8 +5,10 @@ Drawing-based
  وفي الو package خاصة ب flutter 
 
 code-based   
- 1. Implicit Animations هي البسيط
+?-------------------------------------------------------------------------------
+! 1. Implicit Animations هي البسيط
 هي عبارة عن widget انا فقد عند تغيير القيمة بشكل مباشر
+! widgets
 1.1 AnimatedContainer هي نفس container العادي بس بتاخد duration زمن 
 خاصية هامة جداً وهي ال curve  منحني الانتقال الحالة الافتراضية الو linear
 بنفس السرعة من البداية للنهاية 
@@ -37,4 +39,106 @@ AnimatedPositioned(
 1.7. AnimatedPhysicalModel ملاحظة ال shape لا تدعم ال animation 
 خواصها duration shadowColor color elevation animateColor هي بتاخد قيمة bool 
 اذا بدك ال color يتغير مع animation true والا false
- */
+1.8. AnimatedSize  بتأثر على حجم ال child فيك تجربها مع container
+1.9. AnimatedAlign  في خاصية align 
+! TweenAnimationBuilder  
+اول ما تنبني الصفحة بياخد begin لل end  حسب ال  duration
+فيك تستعمل مع اي widget  الخواص جواتها 
+duration
+builder context,value,child بما ان فيها builder فما بدها setState لحالها بتتغير القيمة 
+tween  يلي نضيف القيمة النهائية والبدائية -> Tween(begin , end) 
+فيك تستعمل ColorTween, sizeTween, borderTween ........... 
+اذا ما بدك ال animation يتغير مع بداية الصفحة حط ال start وال end نفس القيمة 
+
+?-------------------------------------------------------------------------------
+! 2. Explicit Animations 
+بهاد النوع بتحسن تساوي انيمشن معقد ما بكون محدود متل النوع الأول
+بالخواص يلي عطونا ياها height, width, ...... 
+بحتى احسن استملها لازم استخدم AnimationController 
+ولأحسن بلش استخدموا لازم ضيف SingleTickerProviderStateMixin أو TickerProviderStateMixing 
+to stateFullWidget
+? class _TestAnimationPageState extends State<TestAnimationPage>with SingleTickerProviderStateMixin
+من اسمهم اذا عندي AnimationController واحد بستعمل -> SingleTickerProviderStateMixin
+اذا اكتر من AnimationController بستعمل -> TickerProviderStateMixing
+يلي بدك تستعمل عليهم ال animationController لازم تحطهم داخل AnimatedBuilder هي متل استعمال ال setState بس لل animatoin 
+? late AnimationController animation;
+  @override
+  void initState() {
+  commit: vsync ويلي هو التزامن العمودي حطيت this لأشر ل SingleTickerProviderStateMixin
+    animation = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 3),
+        lowerBound: 100,
+        upperBound: 300);
+    super.initState();
+  }
+ ? المكان يلي لازم تتفعل فيه 
+  AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+              alignment: Alignment.center,
+              color: Colors.red,
+              width: animation.value,
+              height: animation.value,
+            );
+          },
+        ),
+        ال child فيك تستعملو لشي انت ما بدك بنعملو انميشن 
+        child: حط يلي بدك ياه وجوات ال builder بتستدعي ال child 
+        هي مشان تحسين الاداء 
+? لتتفعل وتنتقل من القيمة الابتدايئة للقيمة النهائية بستعمل 
+          animation.forward();
+As a result, with the AnimationController, you can:
+
+call forward() to play the animation forward
+call reverse() to play the animation in reverse
+call stop() to stop the animation
+call repeat() to repeat the animation as long as it’s visible
+call reset() to reset the animation to lowerBound
+set it’s value
+Access various getters to know the state of the animation like: isAnimating , isCompleted , isDismissed , …etc.
+?Transfrom
+? Transfrom.rotate لتحسن تعمل تدورير ل widget بزاوية محددة 
+بس بدون انيمشن بس فيك تحطها ب Tween
+Transfrom.rotate(
+angle:الزارية بالراديان,
+child: ....,
+);
+? Transfrom.translate انزياح
+Transfrom.rotate(
+offset:Offset(x,y),
+child: ....,
+);
+? Transfrom.sacle تزيد الحجم او تكبروا
+scale: 1 normall , 0 delete 
+فيك تغير ال origin مركز الاحداثيات
+?-------------------------------------------------------------------------------
+widgets جاهزة للاستعمال مع ال  Explicit Animations
+Here’s a full list of available FooTransition widgets:
+
+AlignTransition
+
+DecoratedBoxTransition
+
+DefaultTextStyleTransition
+
+FadeTransition
+
+PositionedTransition
+
+RelativePositionedTransition
+
+RotationTransition
+
+ScaleTransition
+
+ScaleTransition
+
+SizeTransition
+
+SlideTransition
+
+StatusTransitionWidget
+*/

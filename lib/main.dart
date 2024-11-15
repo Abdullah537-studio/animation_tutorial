@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/anim/test_animation_2_page.dart';
 import 'package:flutter_application_1/anim/test_animation_page.dart';
 
 void main(List<String> args) {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: TestAnimationPage(),
+      home: ExplicitAnimations(),
     );
   }
 }
